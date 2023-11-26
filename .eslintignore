@@ -1,0 +1,5 @@
+*.d.ts
+node_modules
+*.md
+.prettierignore
+.prettierrc.json
