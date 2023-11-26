@@ -21,4 +21,4 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 ## Learn More
 
 -  Design: https://www.figma.com/file/Yq2FFqMtUotYQ3ckNmoR8F/Spooky-Teller-App?type=design&node-id=0%3A1&mode=design&t=BmXI0nCDARmcOCOs-1
--  Jira: https://mauriciodb.atlassian.net/browse/SPOOKY  
+-  Jira: https://mauriciodb.atlassian.net/browse/SPOOKY 
