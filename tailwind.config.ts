@@ -14,8 +14,8 @@ const config: Config = {
           'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
       },
       colors: {
-        'milk': '#FFFDFE',
-        'amethysts': '#140D2A'
+        milk: '#FFFDFE',
+        amethysts: '#140D2A',
       },
     },
   },
