@@ -1,4 +1,7 @@
+'use client';
+import { Button } from '@/stories/Button'
 import Image from 'next/image'
+import Link from 'next/link'
 
 export default function Home() {
   return (
@@ -11,6 +14,10 @@ export default function Home() {
         priority
       />
       <h1 className="text-3xl text-milk">Spooky Teller</h1>
+      <Link href="/story-teller">
+        <Button primary label="Story Teller" />
+      </Link>
+
     </main>
   )
 }

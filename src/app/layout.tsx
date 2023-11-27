@@ -14,13 +14,23 @@ export default function RootLayout({
 }: {
   children: React.ReactNode
 }) {
+
+  // Move this from here use tailwind instead for whichever classes are posible and and make it a class not an inline style
+  const svgBackgroundStyle = {
+    backgroundImage: 'url("/endless-constellation.svg")',
+    backgroundSize: 'cover',
+    backgroundRepeat: 'no-repeat',
+    backgroundPosition: 'center',
+    minHeight: '100vh', // Set to 100% of the viewport height
+  };
+
   return (
     <html lang="en">
       <head>
         <link rel="icon" href="/favicon.ico" sizes="any" />
         <title>Spooky Teller: Horror Stories</title>
       </head>
-      <body className={`${fellEnglishSC.className} bg-amethysts`}>
+      <body style={svgBackgroundStyle} className={`${fellEnglishSC.className}`}>
         {children}
       </body>
     </html>

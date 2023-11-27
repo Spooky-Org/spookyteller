@@ -1,0 +1,38 @@
+footer {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    background-color: #333; /* Add your preferred background color */
+    display: flex;
+  }
+  
+  nav {
+    display: flex;
+    width: 100%;
+  }
+  
+  button {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+    color: white; /* Add your preferred text color */
+    background-color: #555; /* Add your preferred button color */
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  button:hover {
+    background-color: #777; /* Add your preferred hover color */
+  }
+  
+  span {
+    display: block;
+    font-size: 0.8rem; /* Adjust font size as needed */
+    margin-top: 5px;
+  }
+  
