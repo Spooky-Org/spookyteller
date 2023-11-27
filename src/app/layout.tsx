@@ -15,9 +15,9 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang='en'>
+    <html lang="en">
       <head>
-        <link rel='icon' href='/favicon.ico' sizes='any' />
+        <link rel="icon" href="/favicon.ico" sizes="any" />
         <title>Spooky Teller: Horror Stories</title>
       </head>
       <body className={`${fellEnglishSC.className} bg-amethysts`}>
