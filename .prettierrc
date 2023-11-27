@@ -2,12 +2,5 @@
   "semi": false,
   "singleQuote": true,
   "trailingComma": "all",
-  "bracketSameLine": false,
-  "overrides": [
-    {
-      "files": "**/*.{ts,tsx,js,jsx}",
-      "options": {
-      }
-    }
-  ]
+  "bracketSameLine": false
 }
