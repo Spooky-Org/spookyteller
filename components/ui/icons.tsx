@@ -442,6 +442,19 @@ function IconUsers({ className, ...props }: React.ComponentProps<'svg'>) {
   )
 }
 
+function IconVolume({ className, ...props }: React.ComponentProps<'svg'>) {
+  return (
+    <svg className={cn('h-4 w-4', className)} xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 256 256" {...props}><path d="M155.51,24.81a8,8,0,0,0-8.42.88L77.25,80H32A16,16,0,0,0,16,96v64a16,16,0,0,0,16,16H77.25l69.84,54.31A8,8,0,0,0,160,224V32A8,8,0,0,0,155.51,24.81ZM32,96H72v64H32ZM144,207.64,88,164.09V91.91l56-43.55Zm54-106.08a40,40,0,0,1,0,52.88,8,8,0,0,1-12-10.58,24,24,0,0,0,0-31.72,8,8,0,0,1,12-10.58ZM248,128a79.9,79.9,0,0,1-20.37,53.34,8,8,0,0,1-11.92-10.67,64,64,0,0,0,0-85.33,8,8,0,1,1,11.92-10.67A79.83,79.83,0,0,1,248,128Z"></path></svg>
+  )
+}
+
+function IconMuteVolume({ className, ...props }: React.ComponentProps<'svg'>) {
+  return (
+    <svg className={cn('h-4 w-4', className)} xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 256 256" {...props}><path d="M184,152V104a8,8,0,0,1,16,0v48a8,8,0,0,1-16,0Zm40-72a8,8,0,0,0-8,8v80a8,8,0,0,0,16,0V88A8,8,0,0,0,224,80ZM213.92,210.62a8,8,0,1,1-11.84,10.76L160,175.09V224a8,8,0,0,1-12.91,6.31L77.25,176H32a16,16,0,0,1-16-16V96A16,16,0,0,1,32,80H73.55L42.08,45.38A8,8,0,1,1,53.92,34.62ZM144,157.49,88.1,96H32v64H80a7.94,7.94,0,0,1,4.91,1.69L144,207.64ZM117.06,69.31l26.94-21v58.47a8,8,0,0,0,16,0V32a8,8,0,0,0-12.91-6.31l-39.85,31a8,8,0,0,0,9.82,12.63Z"></path></svg>
+  )
+}
+
+
 function IconExternalLink({
   className,
   ...props
@@ -477,6 +490,8 @@ function IconChevronUpDown({
 }
 
 export {
+  IconMuteVolume,
+  IconVolume,
   IconEdit,
   IconNextChat,
   IconOpenAI,

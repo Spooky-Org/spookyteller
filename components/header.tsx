@@ -8,7 +8,7 @@ import { Button, buttonVariants } from '@/components/ui/button'
 import { Sidebar } from '@/components/sidebar'
 import { SidebarList } from '@/components/sidebar-list'
 import {
-  IconGitHub,
+  IconVolume,
   IconNextChat,
   IconSeparator,
   IconVercel
@@ -17,6 +17,7 @@ import { SidebarFooter } from '@/components/sidebar-footer'
 import { ThemeToggle } from '@/components/theme-toggle'
 import { ClearHistory } from '@/components/clear-history'
 import { UserMenu } from '@/components/user-menu'
+import { MusicPlayer } from '@/components/music-player'
 
 async function UserOrLogin() {
   const session = await auth()
@@ -61,24 +62,14 @@ export function Header() {
         </React.Suspense>
       </div>
       <div className="flex items-center justify-end space-x-2">
-        <a
-          target="_blank"
-          href="https://github.com/vercel/nextjs-ai-chatbot/"
-          rel="noopener noreferrer"
-          className={cn(buttonVariants({ variant: 'outline' }))}
-        >
-          <IconGitHub />
-          <span className="hidden ml-2 md:flex">GitHub</span>
-        </a>
-        <a
+        {/* <a
           href="https://github.com/vercel/nextjs-ai-chatbot/"
           target="_blank"
           className={cn(buttonVariants())}
         >
-          <IconVercel className="mr-2" />
-          <span className="hidden sm:block">Deploy to Vercel</span>
-          <span className="sm:hidden">Deploy</span>
-        </a>
+          <IconVolume />
+        </a> */}
+        <MusicPlayer />
       </div>
     </header>
   )
