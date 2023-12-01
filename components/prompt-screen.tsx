@@ -25,7 +25,7 @@ export function PromptScreen({
 }: PromptScreenProps) {
   return (
     <>
-    <div style={{    left: '50%', transform: 'translate(-50%, 0)', top: '10%'}} className='absolute top-20px'>
+    <div style={{ transform: 'translate(-50%, 0)'}} className='absolute left-2/4 top-24'>
       <img src='/SpookyTellerIcon.png' alt="spooky-teller-icon" />
     </div>
     <div className="fixed inset-x-0 bottom-50% bg-gradient-to-b from-muted/10 from-10% to-muted/30 to-50%">

@@ -1,14 +1,6 @@
 import { UseChatHelpers } from 'ai/react'
 import * as React from 'react'
-import Textarea from 'react-textarea-autosize'
-
-import { Button, buttonVariants } from '@/components/ui/button'
-import { IconArrowElbow, IconPlay, IconFilters } from '@/components/ui/icons'
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger
-} from '@/components/ui/tooltip'
+import { IconPlay, IconFilters } from '@/components/ui/icons'
 import { useEnterSubmit } from '@/lib/hooks/use-enter-submit'
 import { PromptInput } from '@/components/prompt-input'
 import BottomNavbar, { NavbarButton } from './bottom-navbar'
@@ -36,7 +28,6 @@ export function PromptInputForm({
   onSubmit,
   input,
   setInput,
-  isLoading
 }: PromptInputFormProps) {
   const { formRef, onKeyDown } = useEnterSubmit()
   const characterInputRef = React.useRef<HTMLTextAreaElement>(null)
