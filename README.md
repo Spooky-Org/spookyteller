@@ -3,17 +3,13 @@
 Dive into the world of shadows and suspense with SpookyTales, the ultimate app for fans of horror and spooky stories. SpookyTales stands out in the realm of horror storytelling by offering a unique and immersive experience that caters to your love for the macabre and the mysterious.
 
 ## Getting Started
+Have node 20.9.0>
 
 First, run the development server:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
+pnpm install
 pnpm dev
-# or
-bun dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
