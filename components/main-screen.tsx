@@ -84,8 +84,6 @@ export function MainScreen({ id, initialMessages, className }: MainScreenProps) 
         ]
     )
 
-
-    console.log("DEBUG LOADER",isLoading)
     const openAIMessages = messages?.filter(message => message.role !== 'user') || []
 
     useEffect(() => {
