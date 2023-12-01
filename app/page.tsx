@@ -1,8 +1,8 @@
 import { nanoid } from '@/lib/utils'
-import { Chat } from '@/components/chat'
+import { MainScreen } from '@/components/main-screen'
 
 export default function IndexPage() {
   const id = nanoid()
 
-  return <Chat id={id} />
+  return <MainScreen id={id} />
 }
