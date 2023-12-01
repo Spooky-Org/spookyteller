@@ -17,11 +17,11 @@ interface BuildPromptParams {
   length?: string
 }
 
-const ENbuildPrompt = ({characters, place, length = '20 seconds'}: BuildPromptParams)  => 
-`Short ${length} read Scary story with characters: ${characters} set in a terror movie in a ${place}, add dialogs as well as sound indicators of open doors etc, don't be afraid to add mystery, murder or even a plot twist, use inspiration from Stephen king stories leave some elements for a continuation of the story but make it satisfactory to read`
+const ENbuildPrompt = ({characters='add some random names', place='pick any place from a common terror movie', length = '20 seconds'}: BuildPromptParams)  => 
+`Short ${length} read Scary story with characters: ${characters} set in ${place}, add dialogs as well as sound indicators of open doors etc, don't be afraid to add mystery, murder or even a plot twist, make it really creepy`
 
-const ESbuildPrompt = ({characters, place, length = '20 segundos'}: BuildPromptParams)  => 
-`Historia corta de ${length} de lectura de miedo con los personajes: ${characters} puestos en una pelicula de miedo en ${place}, agrega dialogos asi como indicadores de sonidos puertas abriendose etc, no tengas miedo de agregar misterio asesinato y hasta un plot twist, usa inspiracion del autor Stephen King deja algunos elementos para continuar la historia pero que sea satisfactoria de leer`
+const ESbuildPrompt = ({characters='agrega nombres al azar', place='algun lugar comun de peliculas de miedo', length = '20 segundos'}: BuildPromptParams)  => 
+`Historia corta de ${length} de lectura de miedo con los personajes: ${characters} puestos en ${place}, agrega dialogos asi como indicadores de sonidos puertas abriendose etc, no tengas miedo de agregar misterio asesinato y hasta un plot twist, hazla espeluznante`
 
 
 export function PromptInputForm({
