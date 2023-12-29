@@ -11,8 +11,6 @@ import {PromptScreen} from '@/components/prompt-screen'
 import BottomNavbar, {NavbarButton} from './bottom-navbar'
 import {IconListen, IconPause, IconPlay, IconRefreshClockWise} from '@/components/ui/icons'
 import {ChatRequest} from "@/app/api/voice/route";
-import {Simulate} from "react-dom/test-utils";
-import play = Simulate.play;
 
 type SpeechTrackPlayer = {
   audioElem: HTMLAudioElement;
@@ -197,9 +195,13 @@ class AudioManager {
   }
 
   async play(paragraph?: string) {
-    if(this._isPlaying){
+    /*
+        TODO: If paragraph is exist, change audioTrackerIndex.
+          Example use case: User can click on a paragraph in the screen,
+          audio should be play from where he clicked
+     */
 
-    }
+
     if (!this.isPlaying) {
       this.isPlaying = true;
       await this.playNext();
