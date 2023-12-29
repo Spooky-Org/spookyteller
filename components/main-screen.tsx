@@ -49,16 +49,23 @@ export function MainScreen({id, initialMessages, className}: MainScreenProps) {
         }
       },
       onFinish(message: Message) {
+        //Redirect user to ChatID after the first successful chat stream, this should only happen on new chats
         if (!path.includes('chat')) {
           router.push(`/chat/${id}`, {shallow: true})
           router.refresh()
         }
+
+        //Load Story messages/paragraphs into AudioManager
         if (message.role === 'assistant') {
           audioManagerRef.current.append(message);
         }
       }
     })
 
+  /*
+    Sync AudioManager with react state, allow React to trigger effect based on AudioManagerState
+    TODO: is this the only way? Should we add the state inside the Manger, maybe a ReactAudioManager?
+   */
   useEffect(() => {
     if(!audioManagerRef.current || !path.includes('chat')) return;
     audioManagerRef.current.onPlayChange((isPlaying) => {
@@ -66,6 +73,7 @@ export function MainScreen({id, initialMessages, className}: MainScreenProps) {
     })
   }, [audioManagerRef.current])
 
+  //Load Story messages/paragraphs into AudioManager
   useEffect(() => {
     if (messages.length === 0 || messages.length === 1) return;
     const storyMessages = messages.filter((message) => message.role === 'assistant');
@@ -160,6 +168,12 @@ export function MainScreen({id, initialMessages, className}: MainScreenProps) {
   )
 }
 
+/*
+  TODO: Design Interface, what action should AudioManager allow you to do?
+  - play,pause, restart?, playFrom?
+  - Is 'append'  a good abstraction?
+ */
+
 class AudioManager {
   private readonly speechTracks: Map<number, SpeechTrack> = new Map<number, SpeechTrack>();
   private _isPlaying = false;
@@ -213,7 +227,7 @@ class AudioManager {
     this.speechTracks.get(this.audioTrackerIndex)?.player?.audioElem.pause()
   }
 
-  async playNext() {
+  private async playNext() {
     if (!this.isPlaying) return;
     if (this.audioTrackerIndex > this.speechTracks.size) {
       this.isPlaying = false;
