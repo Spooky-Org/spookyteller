@@ -1,29 +1,44 @@
 'use client'
 
-import { useChat, type Message } from 'ai/react'
-import { useEffect, useState } from 'react'
-import { cn } from '@/lib/utils'
-import { ChatList } from '@/components/chat-list'
-import { ChatScrollAnchor } from '@/components/chat-scroll-anchor'
-import { toast } from 'react-hot-toast'
-import { usePathname, useRouter } from 'next/navigation'
-import { PromptScreen } from '@/components/prompt-screen'
-import BottomNavbar, { NavbarButton } from './bottom-navbar'
-import { IconListen,
-        IconPause,
-        IconPlay,
-        IconRefreshClockWise  } from '@/components/ui/icons'
+import {type Message, useChat} from 'ai/react'
+import {useEffect, useMemo, useRef, useState} from 'react'
+import {cn} from '@/lib/utils'
+import {ChatList} from '@/components/chat-list'
+import {ChatScrollAnchor} from '@/components/chat-scroll-anchor'
+import {toast} from 'react-hot-toast'
+import {usePathname, useRouter} from 'next/navigation'
+import {PromptScreen} from '@/components/prompt-screen'
+import BottomNavbar, {NavbarButton} from './bottom-navbar'
+import {IconListen, IconPause, IconPlay, IconRefreshClockWise} from '@/components/ui/icons'
+import {ChatRequest} from "@/app/api/voice/route";
+import {Simulate} from "react-dom/test-utils";
+import play = Simulate.play;
+
+type SpeechTrackPlayer = {
+  audioElem: HTMLAudioElement;
+  status: 'playing' | 'pause';
+  speed: number;
+  volume: number;
+  second: number;
+};
+
+type SpeechTrack = {
+  content: string
+  request: 'none' | 'pending' | 'error' | 'ready'
+  player?: SpeechTrackPlayer
+}
 
 export interface MainScreenProps extends React.ComponentProps<'div'> {
   initialMessages?: Message[]
   id?: string
 }
 
-
-export function MainScreen({ id, initialMessages, className }: MainScreenProps) {
+export function MainScreen({id, initialMessages, className}: MainScreenProps) {
   const router = useRouter()
-  const path = usePathname()
-  const { messages, append, reload, stop, isLoading, input, setInput } =
+  const path = usePathname();
+  const audioManagerRef = useRef<AudioManager>(new AudioManager());
+  const [isAudioPlaying,setIsAudioPlaying] = useState<boolean>(false);
+  const {messages, append, reload, stop, isLoading, input, setInput} =
     useChat({
       initialMessages,
       id,
@@ -35,87 +50,101 @@ export function MainScreen({ id, initialMessages, className }: MainScreenProps) 
           toast.error(response.statusText)
         }
       },
-      onFinish() {
+      onFinish(message: Message) {
         if (!path.includes('chat')) {
-          router.push(`/chat/${id}`, { shallow: true })
+          router.push(`/chat/${id}`, {shallow: true})
           router.refresh()
+        }
+        if (message.role === 'assistant') {
+          audioManagerRef.current.append(message);
         }
       }
     })
 
-    
-    const chatListNavbarButtonsList: NavbarButton[] = [
-        {
-            icon: IconRefreshClockWise,
-            label: 'Refresh',
-            onClick: e => {
-                e.preventDefault()
-                router.refresh()
-                router.push('/')
-            },
-        },
-        {
-            icon: IconPause,
-            label: 'Pause',
-            onClick:  stop,
-        },
-        {
-            icon: IconPlay,
-            label: 'Continue',
-            onClick:  async () => {
-                await append({
-                  id,
-                  content: 'Continue generating the story with more terrifying elements include character development and even some deaths if seemed proper',
-                  role: 'user'
-                })
-              },
-        },
-        {
-            icon: IconListen,
-            label: 'Listen',
-            onClick: () => console.log('Reading text'),
-        },
+  useEffect(() => {
+    if(!audioManagerRef.current || !path.includes('chat')) return;
+    audioManagerRef.current.onPlayChange((isPlaying) => {
+      setIsAudioPlaying(isPlaying)
+    })
+  }, [audioManagerRef.current])
+
+  useEffect(() => {
+    if (messages.length === 0 || messages.length === 1) return;
+    const storyMessages = messages.filter((message) => message.role === 'assistant');
+    for (const storyMessage of storyMessages) {
+      audioManagerRef.current.append(storyMessage);
+    }
+  }, []);
+
+
+  const chatListNavbarButtonsList: NavbarButton[] = [
+    {
+      icon: IconRefreshClockWise,
+      label: 'Refresh',
+      onClick: e => {
+        e.preventDefault()
+        router.refresh()
+        router.push('/')
+      },
+    },
+    {
+      icon: IconPause,
+      label: 'Pause',
+      onClick: stop,
+    },
+    {
+      icon: IconPlay,
+      label: 'Continue',
+      onClick: async () => {
+        await append({
+          id,
+          content: 'Continue generating the story with more terrifying elements include character development and even some deaths if seemed proper',
+          role: 'user'
+        })
+      },
+    },
+    {
+      icon: IconListen,
+      label: 'Listen',
+      onClick: () => audioManagerRef.current.play(),
+    },
+    {
+      icon: IconPause,
+      label: 'Pause Listen',
+      onClick: () => audioManagerRef.current.pause(),
+    },
+  ]
+  const [chatListNavbarButtons, setChatListNavbarButtons] = useState<NavbarButton[]>(
+    [
+      chatListNavbarButtonsList[0],
+      chatListNavbarButtonsList[2],
+      chatListNavbarButtonsList[3],
     ]
-    const [chatListNavbarButtons, setChatListNavbarButtons] =  useState<NavbarButton[]>(
-        [
-            chatListNavbarButtonsList[0],
-            chatListNavbarButtonsList[2],
-            chatListNavbarButtonsList[3],
-        ]
+  )
+
+  const openAIMessages = messages?.filter(message => message.role !== 'user') || []
+
+  useEffect(() => {
+    const firstIcon = chatListNavbarButtonsList[0];
+    const secondIcon = !isLoading ? chatListNavbarButtonsList[2] : chatListNavbarButtonsList[1];
+    const thirdIcon = !isAudioPlaying ? chatListNavbarButtonsList[3] : chatListNavbarButtonsList[4];
+
+    setChatListNavbarButtons(
+      [firstIcon,secondIcon,thirdIcon]
     )
+  }, [isLoading,audioManagerRef.current.isPlaying])
 
-    const openAIMessages = messages?.filter(message => message.role !== 'user') || []
-
-    useEffect(() => {
-        if(!isLoading)
-        setChatListNavbarButtons(
-            [
-                chatListNavbarButtonsList[0],
-                chatListNavbarButtonsList[2],
-                chatListNavbarButtonsList[3],
-            ]
-        )
-        else {
-            setChatListNavbarButtons(
-                [
-                    chatListNavbarButtonsList[0],
-                    chatListNavbarButtonsList[1],
-                    chatListNavbarButtonsList[3],
-                ]
-            )
-        }
-    }, [isLoading])
 
   return (
     <>
       <div className={cn('pb-[200px] pt-4 md:pt-10', className)}>
         {openAIMessages.length ? (
           <>
-            <ChatList messages={openAIMessages} />
-            <ChatScrollAnchor trackVisibility={isLoading} />
+            <ChatList messages={openAIMessages}/>
+            <ChatScrollAnchor trackVisibility={isLoading}/>
           </>
         ) : (
-            <PromptScreen
+          <PromptScreen
             id={id}
             isLoading={isLoading}
             stop={stop}
@@ -128,7 +157,146 @@ export function MainScreen({ id, initialMessages, className }: MainScreenProps) 
         )}
       </div>
       {openAIMessages.length > 0 && <BottomNavbar buttons={chatListNavbarButtons}/>}
-      
+
     </>
   )
+}
+
+class AudioManager {
+  private readonly speechTracks: Map<number, SpeechTrack> = new Map<number, SpeechTrack>();
+  private _isPlaying = false;
+  private audioTrackerIndex = 1;
+  private onPlayChangeCallback: ((isPlaying:boolean) => void) | null = null;
+
+  constructor() {
+  }
+
+  onPlayChange(callback: (isPlaying:boolean) => void) {
+    this.onPlayChangeCallback = callback;
+  }
+  get isPlaying(): boolean {
+    return this._isPlaying;
+  }
+
+  set isPlaying(value: boolean) {
+    if (value !== this._isPlaying) {
+      this._isPlaying = value;
+      if(this.onPlayChangeCallback){
+        this.onPlayChangeCallback(this._isPlaying)
+      }
+    }
+  }
+
+  append(message: Message) {
+    const paragraphs = this.messagesToParagraphs(message);
+    for (const paragraph of paragraphs) {
+      if (!this.paragraphAlreadyExist(paragraph)) {
+        this.speechTracks.set(this.speechTracks.size + 1, {content: paragraph, request: 'none'});
+      }
+    }
+  }
+
+  async play(paragraph?: string) {
+    if(this._isPlaying){
+
+    }
+    if (!this.isPlaying) {
+      this.isPlaying = true;
+      await this.playNext();
+    }
+  }
+
+  async pause() {
+    this.isPlaying = false;
+    this.speechTracks.get(this.audioTrackerIndex)?.player?.audioElem.pause()
+  }
+
+  async playNext() {
+    if (!this.isPlaying) return;
+    if (this.audioTrackerIndex > this.speechTracks.size) {
+      this.isPlaying = false;
+      return;
+    }
+    const track = this.speechTracks.get(this.audioTrackerIndex);
+    if (!track) throw new Error('Missing Track');
+
+    if (!track.player) {
+      const respTrack = await this.textToSpeech(track.content, 'user');
+      if (!respTrack) throw new Error('Error While converting text to speech');
+      this.speechTracks.set(this.audioTrackerIndex, {...track, player: respTrack});
+      respTrack.audioElem.addEventListener('ended', () => {
+        this.audioTrackerIndex++;
+        this.playNext();
+      });
+      await respTrack.audioElem.play();
+    }
+
+    const nextTrack = this.speechTracks.get(this.audioTrackerIndex + 1);
+    if(nextTrack){
+      this.textToSpeech(nextTrack.content, 'user').then((respTrack2) => {
+        if(respTrack2){
+          this.speechTracks.set(this.audioTrackerIndex + 1, {...nextTrack, player: respTrack2});
+          respTrack2.audioElem.addEventListener('ended', () => {
+            this.audioTrackerIndex++;
+            this.playNext();
+          });
+        }
+      });
+    }
+
+    track.player?.audioElem.play()
+  }
+
+  private async textToSpeech(text: string, role: string): Promise<SpeechTrackPlayer | null> {
+    const request = {
+      messages: {
+        content: text,
+        role: role
+      }
+    } as ChatRequest;
+
+    try {
+      const response = await fetch('/api/voice', {
+        method: 'POST', // Ensure the correct HTTP method is set
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(request)
+      });
+
+      const blob = await response.blob();
+      const url = URL.createObjectURL(blob); // Create a URL for the blob
+      const audio = document.createElement('audio');
+      audio.src = url;
+      audio.controls = true;
+      audio.style.display = 'none';
+      document.body.appendChild(audio);
+
+      return {
+        audioElem: audio,
+        status: 'pause',
+        speed: 1,
+        volume: 50,
+        second: 0
+      };
+
+    } catch (error) {
+      console.error('Error fetching and processing data', error);
+      return null; // In case of error, return null or handle as required
+    }
+  }
+
+  private paragraphAlreadyExist(paragraph: string) {
+    let exists = false;
+    this.speechTracks.forEach((value) => {
+      if (value.content.indexOf(paragraph) !== -1) {
+        exists = true;
+      }
+    });
+    return exists;
+  }
+
+  private messagesToParagraphs(message: Message) {
+    return message.content.split('\n\n');
+  }
 }
